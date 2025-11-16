@@ -66,14 +66,8 @@ This project implements a **scalable backend API** for analytics events, support
 
 ## Architecture & Flow
 
-```lua
-flowchart LR
-    Client[Website / Mobile App] -->|Send Event| API[Express API]
-    API -->|Validate API Key| Redis
-    API -->|Persist Event| Postgres[(PostgreSQL)]
-    API -->|Cache Summary| Redis
-    API -->|Respond Aggregations| Client
-```
+![alt text](image.png)
+
 
 - **Redis**: Caches API key validation and frequently requested analytics data  
 - **Prisma**: Handles database queries and migrations  
