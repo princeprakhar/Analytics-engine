@@ -7,10 +7,12 @@ RUN npm install
 
 COPY . .
 
-# Prisma needs to be generated inside container
+# Generate Prisma client
 RUN npx prisma generate
+
+# Run migrations automatically on deploy
+RUN npx prisma migrate deploy
 
 EXPOSE 8080
 
 CMD ["npm", "start"]
-
