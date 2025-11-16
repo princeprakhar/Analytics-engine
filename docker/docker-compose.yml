@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: analytics_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: analytics
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    mem_limit: 600m
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: analytics_redis
+    ports:
+      - "6380:6380"
+    mem_limit: 100m
+    restart: always
+
+volumes:
+  postgres_data:
+
