@@ -1,0 +1,278 @@
+{
+	"info": {
+		"_postman_id": "cc9f798a-ade6-426f-bef6-5f10c5537833",
+		"name": "Analytics-engine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32876399"
+	},
+	"item": [
+		{
+			"name": "Regerate Api Key",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://unified-event-analytics-wdpr.onrender.com/api/auth/api-key?appId=cmi1ywmjl0002n02cdpg6um70",
+					"protocol": "https",
+					"host": [
+						"unified-event-analytics-wdpr",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"api-key"
+					],
+					"query": [
+						{
+							"key": "appId",
+							"value": "cmi1ywmjl0002n02cdpg6um70"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register App",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"Test App\",\"ownerEmail\":\"test@app.com\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://unified-event-analytics-wdpr.onrender.com/api/auth/register",
+					"protocol": "https",
+					"host": [
+						"unified-event-analytics-wdpr",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Revoke  API Key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"apiKey\":\"2d0da8a0-98ee-4c8b-bb96-88d610a165a5\"\n    // \"appId\":\"cmi1uro670000s401whytmhun\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/revoke",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"revoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Analytics Collect",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "1627310c-dff4-45c6-b249-4fdced2b7f3c",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "// {\n//   \"eventName\": \"page_view\",\n//   \"url\": \"https://example.com\",\n//   \"referrer\": \"https://google.com\",\n//   \"device\": \"mobile\",\n//   \"ipAddress\": \"192.168.1.10\",\n//   \"metadata\": {\n//     \"buttonId\": \"signup-btn\",\n//     \"experiment\": \"A/B Test #3\"\n//   }\n// }\n{\n  \"eventName\": \"login_form_cta_click\",\n  \"url\": \"<https://example.com/page>\",\n  \"referrer\": \"<https://google.com>\",\n  \"device\": \"mobile\",\n  \"ipAddress\": \"....\",\n  \"timestamp\": \"2024-02-20T12:34:56Z\",\n  \"metadata\": {\n    \"browser\": \"Chrome\",\n    \"os\": \"Android\",\n    \"screenSize\": \"1080x1920\"\n  }\n  // more user specific details from userAgent\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/analytics/collect",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"analytics",
+						"collect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event Summary",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "1627310c-dff4-45c6-b249-4fdced2b7f3c",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/analytics/event-summary?eventName=page_view",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"analytics",
+						"event-summary"
+					],
+					"query": [
+						{
+							"key": "eventName",
+							"value": "page_view"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User stats",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "1627310c-dff4-45c6-b249-4fdced2b7f3c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/analytics/user-stats?userIp=....",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"analytics",
+						"user-stats"
+					],
+					"query": [
+						{
+							"key": "userIp",
+							"value": "...."
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Daily Stats",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "1627310c-dff4-45c6-b249-4fdced2b7f3c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/analytics/daily-stats?days=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"analytics",
+						"daily-stats"
+					],
+					"query": [
+						{
+							"key": "days",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Top Pages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "1627310c-dff4-45c6-b249-4fdced2b7f3c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/analytics/top-pages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"analytics",
+						"top-pages"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
