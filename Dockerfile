@@ -7,12 +7,10 @@ RUN npm install
 
 COPY . .
 
-# Generate Prisma client
+# Prisma client generation is safe at build time
 RUN npx prisma generate
-
-# Run migrations automatically on deploy
-RUN npx prisma migrate deploy
 
 EXPOSE 8080
 
-CMD ["npm", "start"]
+# Run migrations and then start the server
+CMD npx prisma migrate deploy && npm start
