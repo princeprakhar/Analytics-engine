@@ -4,12 +4,12 @@
   "description": "this is a backend focused assessment build-in nodejs env for backend assessment.",
   "main": "server.js",
   "scripts": {
-    "dev": "npm run dev",
+    "start": "node src/server.js",
     "test": "jest --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/princeprakhar/analytics-engine.git"
+    "url": "https://github.com/princeprakhar/analytics-engine.git"
   },
   "keywords": [
     "nodejs",
