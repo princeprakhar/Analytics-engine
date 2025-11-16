@@ -2,7 +2,6 @@ const authService = require("../services/auth.service");
 const redis = require("../config/redis");
 
 class AuthController {
-
   // -----------------------------
   // 1. REGISTER APP
   // -----------------------------
@@ -20,7 +19,6 @@ class AuthController {
       await redis.set(`appId:${app.id}`, app.apiKey); // helpful for getApiKey
 
       return res.status(201).json(app);
-
     } catch (err) {
       console.error("Register Error:", err);
       return res.status(500).json({ error: "Registration failed" });
@@ -50,7 +48,6 @@ class AuthController {
       await redis.set(`apiKey:${key.apiKey}`, appId);
 
       return res.json({ apiKey: key.apiKey, source: "db" });
-
     } catch (err) {
       console.error("Get API Key Error:", err);
       return res.status(500).json({ error: "Error retrieving API key" });
@@ -60,26 +57,70 @@ class AuthController {
   // -----------------------------
   // 3. REVOKE API KEY
   // -----------------------------
+  //  async revoke(req, res) {
+  //     try {
+  //       const { apiKey, appId } = req.body;
+
+  //       if (!apiKey) {
+  //         return res.status(400).json({ error: "apiKey is required" });
+  //       }
+
+  //       // Call service to revoke the key
+  //       const revokedApp = await authService.revokeApiKey(apiKey, appId);
+
+  //       if (!revokedApp) {
+  //         return res.status(404).json({ error: "API key not found, already revoked, or invalid appId" });
+  //       }
+
+  //       // Remove from Redis cache
+  //       await redis.del(`apiKey:${apiKey}`);
+
+  //       return res.json({ message: "API key revoked successfully", apiKey });
+  //     } catch (err) {
+  //       console.error("Revoke Error:", err);
+  //       return res.status(500).json({ error: "API key revoke failed" });
+  //     }
+  //   }
+
+  // controllers/auth.controller.js (revoke method)
   async revoke(req, res) {
     try {
-      const { appId } = req.body;
-      if (!appId) return res.status(400).json({ error: "appId required" });
+      const { apiKey, appId } = req.body;
 
-      // Call service to revoke (DB update)
-      const result = await authService.revokeApiKey(appId);
+      // Debug input
+      console.log("Revoke called with body:", { apiKey, appId });
 
-      if (!result) {
-        return res.status(404).json({ error: "App not found or already revoked" });
+      if (!apiKey && !appId) {
+        return res.status(400).json({ error: "apiKey or appId required" });
       }
 
-      // Remove from Redis cache
-      await redis.del(`appId:${appId}`);
-      if (result.oldApiKey) {
-        await redis.del(`apiKey:${result.oldApiKey}`);
+      // Service will resolve app by apiKey or appId
+      const revokedApp = await authService.revokeApiKey(apiKey, appId);
+
+      // Debug result from service
+      console.log("revokedApp result from service:", revokedApp);
+
+      if (!revokedApp) {
+        return res.status(404).json({
+          error: "API key not found, already revoked, or invalid ownership",
+        });
       }
 
-      return res.json({ message: "API key revoked successfully" });
+      // Remove both cache entries (safe to attempt both)
+      try {
+        // If your redis client is callback-based (v3), see notes below about promisify
+        if (revokedApp.apiKey) await redis.del(`apiKey:${revokedApp.apiKey}`);
+        if (revokedApp.id) await redis.del(`appId:${revokedApp.id}`);
+      } catch (e) {
+        console.warn("Redis del during revoke failed:", e);
+        // don't fail the revoke just because cache deletion failed
+      }
 
+      return res.json({
+        message: "API key revoked successfully",
+        appId: revokedApp.id,
+        apiKey: revokedApp.apiKey,
+      });
     } catch (err) {
       console.error("Revoke Error:", err);
       return res.status(500).json({ error: "API key revoke failed" });
@@ -88,4 +129,3 @@ class AuthController {
 }
 
 module.exports = new AuthController();
-

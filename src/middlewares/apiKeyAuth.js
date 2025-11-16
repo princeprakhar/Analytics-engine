@@ -19,14 +19,13 @@ module.exports = async function apiKeyAuth(req, res, next) {
     // 2. If not found, query DB
     const app = await prisma.app.findUnique({
       where: { apiKey },
-      select: { id: true }
+      select: { id: true },
     });
 
     if (!app) return res.status(403).json({ error: "Invalid API Key" });
 
     // 3. Cache API key for future
-    await redis.setEx(`apiKey:${apiKey}`, 3600, app.id); // 1 hour TTL
-
+    await redis.setex(`apiKey:${apiKey}`, 3600, app.id);
     req.appId = app.id;
     next();
   } catch (err) {
@@ -34,4 +33,3 @@ module.exports = async function apiKeyAuth(req, res, next) {
     return res.status(500).json({ error: "Auth error" });
   }
 };
-

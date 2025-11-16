@@ -4,8 +4,8 @@
   "description": "this is a backend focused assessment build-in nodejs env for backend assessment.",
   "main": "server.js",
   "scripts": {
-	"dev": "npm run dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run dev",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",
@@ -37,8 +37,10 @@
     "helmet": "^8.1.0",
     "morgan": "^1.10.1",
     "prisma": "^6.19.0",
-    "redis": "^5.9.0",
-    "uuid": "^13.0.0"
+    "redis": "^3.1.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "dotenv": "^17.2.3",

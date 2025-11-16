@@ -1,9 +1,27 @@
-version: "3.9"
 
 services:
+  backend:
+    container_name: analytics-backend
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/analytics
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    depends_on:
+      - postgres
+      - redis
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             node src/server.js"
+
   postgres:
-    image: postgres:14-alpine
-    container_name: analytics_postgres
+    container_name: analytics-db
+    image: postgres:15
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -12,17 +30,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    mem_limit: 600m
-    restart: always
 
   redis:
-    image: redis:7-alpine
-    container_name: analytics_redis
-    ports:
-      - "6380:6380"
-    mem_limit: 100m
+    container_name: analytics-redis
+    image: redis:7
     restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:
 

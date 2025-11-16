@@ -13,11 +13,10 @@ module.exports = function rateLimit(limit = 50, windowSec = 60) {
 
     if (current > limit) {
       return res.status(429).json({
-        error: "Rate limit exceeded. Try again later."
+        error: "Rate limit exceeded. Try again later.",
       });
     }
 
     next();
   };
 };
-

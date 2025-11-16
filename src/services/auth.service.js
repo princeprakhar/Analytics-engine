@@ -18,17 +18,44 @@ class AuthService {
   }
 
   async getApiKey(appId) {
-    return await prisma.app.findUnique({
-      where: { id: appId },
-      select: { apiKey: true, isRevoked: true, expiresAt: true },
+    return await prisma.app.findFirst({
+      where: {
+        id: appId,
+        isRevoked: false,
+      },
+      select: {
+        apiKey: true,
+        isRevoked: true,
+        expiresAt: true,
+      },
     });
   }
 
-  async revokeApiKey(appId) {
-    return await prisma.app.update({
-      where: { id: appId },
+  async revokeApiKey(apiKey, appId) {
+    let app;
+    if (apiKey) {
+      app = await prisma.app.findUnique({ where: { apiKey } });
+    } else if (appId) {
+      app = await prisma.app.findUnique({ where: { id: appId } });
+    }
+
+    if (!app) {
+      return null;
+    }
+
+    if (apiKey && appId && app.id !== appId) {
+      return null;
+    }
+
+    if (app.isRevoked) {
+      return null;
+    }
+    const revokedApp = await prisma.app.update({
+      where: { id: app.id },
       data: { isRevoked: true },
     });
+
+    return revokedApp;
   }
 
   async validateApiKey(apiKey) {
@@ -43,4 +70,3 @@ class AuthService {
 }
 
 module.exports = new AuthService();
-

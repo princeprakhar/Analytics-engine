@@ -1,24 +1,28 @@
-const { createClient } = require("redis");
+const redis = require("redis");
+const { promisify } = require("util");
 
-const redis = createClient({
-  socket: {
-    host: "127.0.0.1",   // explicitly set
-    port: 6379,          // default redis port
-    reconnectStrategy: () => 3000
-  }
+let client;
+
+// Prefer REDIS_URL in Docker
+if (process.env.REDIS_URL) {
+  client = redis.createClient({ url: process.env.REDIS_URL });
+} else {
+  client = redis.createClient({
+    host: process.env.REDIS_HOST || "redis",
+    port: process.env.REDIS_PORT || 6379,
+  });
+}
+
+// Promisify v3 methods for async/await use
+client.get = promisify(client.get).bind(client);
+client.setex = promisify(client.setex).bind(client);
+
+client.on("connect", () => {
+  console.log("✅ Redis connected (v3 client)");
 });
 
-redis.on("connect", () => console.log("✅ Redis connected"));
-redis.on("ready", () => console.log("🚀 Redis ready"));
-redis.on("error", (err) => console.error("❌ Redis error:", err));
+client.on("error", (err) => {
+  console.error("❌ Redis error:", err);
+});
 
-(async () => {
-  try {
-    await redis.connect();
-  } catch (err) {
-    console.error("Redis connection failed:", err);
-  }
-})();
-
-module.exports = redis;
-
+module.exports = client;
