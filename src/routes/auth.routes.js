@@ -22,10 +22,10 @@ const authController = require("../controllers/auth.controller");
  *           schema:
  *             type: object
  *             properties:
- *               appName:
+ *               name:
  *                 type: string
  *                 example: "My Web App"
- *               userEmail:
+ *               ownerEmail:
  *                 type: string
  *                 example: "john@example.com"
  *     responses:

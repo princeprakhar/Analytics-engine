@@ -77,7 +77,7 @@ router.post(
  *         required: true
  *         description: API key for the app
  *       - in: query
- *         name: event
+ *         name: eventName
  *         schema:
  *           type: string
  *         required: true
@@ -95,7 +95,7 @@ router.post(
  *           format: date
  *         required: false
  *       - in: query
- *         name: app_id
+ *         name: appId
  *         schema:
  *           type: string
  *         required: false
@@ -124,11 +124,11 @@ router.get(
  *           type: string
  *         required: true
  *       - in: query
- *         name: userId
+ *         name: userIp
  *         schema:
  *           type: string
- *         required: false
- *         description: Optional user identifier
+ *         required: true
+ *         description: required userIp
  *     responses:
  *       200:
  *         description: User stats returned
